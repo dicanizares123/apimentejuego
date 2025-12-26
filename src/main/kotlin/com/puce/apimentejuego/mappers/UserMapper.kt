@@ -24,7 +24,6 @@ class UserMapper {
             username = user.username,
             email = user.email,
             createdAt = user.createdAt,
-            updatedAt = user.updatedAt,
         )
     }
 

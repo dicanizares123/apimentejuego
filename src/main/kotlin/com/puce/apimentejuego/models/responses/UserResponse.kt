@@ -9,6 +9,5 @@ data class UserResponse(
     val email: String,
     @JsonProperty( "created_at")
     val createdAt: LocalDateTime,
-    @JsonProperty("updated_at")
-    val updatedAt: LocalDateTime
+
 )

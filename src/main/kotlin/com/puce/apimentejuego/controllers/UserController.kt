@@ -15,8 +15,8 @@ class UserController(
     // 1. CREAR (POST /users)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // Devuelve 201 Created (Buena práctica)
-    fun save(@RequestBody user: UserRequest): UserResponse {
-        return userService.save(user)
+    fun save(@RequestBody request: UserRequest): UserResponse {
+        return userService.save(request)
     }
 
     // 2. LEER TODOS (GET /users)
@@ -33,8 +33,8 @@ class UserController(
 
     // 4. ACTUALIZAR (PUT /users/{id})
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody user: UserRequest): UserResponse {
-        return userService.update(id, user)
+    fun update(@PathVariable id: Long, @RequestBody request: UserRequest): UserResponse {
+        return userService.update(id, request)
     }
 
     // 5. ELIMINAR (DELETE /users/{id})
