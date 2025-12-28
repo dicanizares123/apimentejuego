@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping(value = ["/category"])
+@RequestMapping(value = ["/categories"])
 class CategoryController(
     private val categoryService: CategoryService
 ) {
@@ -28,6 +28,13 @@ class CategoryController(
     @ResponseStatus(HttpStatus.CREATED)
     fun save(@RequestBody request: CategoryRequest ): CategoryResponse{
         return categoryService.save(request)
+    }
+
+    // 1.1 CREAR MULTIPLES (POST /category/batch)
+    @PostMapping("/batch")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveAll(@RequestBody requests: List<CategoryRequest>): List<CategoryResponse> {
+        return categoryService.saveAll(requests)
     }
 
     // 2. LEER TODOS (GET /category)

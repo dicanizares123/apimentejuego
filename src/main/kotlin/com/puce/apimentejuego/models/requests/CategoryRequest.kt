@@ -12,5 +12,5 @@ data class CategoryRequest(
     val shortDescription: String,
     val difficulty: String,
     val title: String,
-    val duration: Int
+    val duration_in_minutes: Int
 )

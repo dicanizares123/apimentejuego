@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component
 @Component
 class CategoryMapper {
 
-    fun toEntity(category: CategoryRequest): Category{
+    fun toEntity(request: CategoryRequest): Category{
         return Category(
-            slug = category.slug,
-            questionsPerGame = category.questionsPerGame,
-            description = category.description,
-            shortDescription = category.shortDescription,
-            difficulty = category.difficulty,
-            title = category.title,
-            duration = category.duration
+            slug = request.slug,
+            questionsPerGame = request.questionsPerGame,
+            description = request.description,
+            shortDescription = request.shortDescription,
+            difficulty = request.difficulty,
+            title = request.title,
+            duration_in_minutes = request.duration_in_minutes
         )
     }
 
@@ -30,7 +30,8 @@ class CategoryMapper {
             shortDescription = category.shortDescription,
             difficulty = category.difficulty,
             title = category.title,
-            duration = category.duration
+            duration_in_minutes = category.duration_in_minutes
+
         )
     }
 
