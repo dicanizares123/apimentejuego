@@ -20,12 +20,7 @@ class CategoryService (
         return categoryMapper.toResponse(savedCategory)
     }
 
-    // C: Create Multiple
-    fun saveAll(request: List<CategoryRequest>): List<CategoryResponse> {
-        val entities = request.map { categoryMapper.toEntity(it) }
-        val savedCategories = categoryRepository.saveAll(entities)
-        return savedCategories.map { categoryMapper.toResponse(it) }
-    }
+
 
     // R: Read By ID
     fun findById(id: Long): CategoryResponse {

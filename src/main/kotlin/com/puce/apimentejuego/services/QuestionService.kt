@@ -38,14 +38,6 @@ class QuestionService(
             .map { questionsMapper.toResponse(it) }
     }
 
-    // R: Read All by Category
-    fun findAllByCategoryId(categoryId: Long): List<QuestionResponse> {
-        if (!categoryRepository.existsById(categoryId)) {
-            throw NoSuchElementException("Category with ID $categoryId not found")
-        }
-        return questionRepository.findByCategoryId(categoryId)
-            .map { questionsMapper.toResponse(it) }
-    }
 
     // U: Update
     fun update(id: Long, request: QuestionRequest): QuestionResponse {

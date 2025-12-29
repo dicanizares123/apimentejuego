@@ -30,12 +30,7 @@ class CategoryController(
         return categoryService.save(request)
     }
 
-    // 1.1 CREAR MULTIPLES (POST /category/batch)
-    @PostMapping("/batch")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun saveAll(@RequestBody requests: List<CategoryRequest>): List<CategoryResponse> {
-        return categoryService.saveAll(requests)
-    }
+
 
     // 2. LEER TODOS (GET /category)
     @GetMapping

@@ -31,11 +31,6 @@ class QuestionController(
         return questionService.findById(id)
     }
 
-    // 3.1 LEER POR CATEGORÍA (GET /questions/category/{categoryId})
-    @GetMapping("/category/{categoryId}")
-    fun findAllByCategoryId(@PathVariable categoryId: Long): List<QuestionResponse> {
-        return questionService.findAllByCategoryId(categoryId)
-    }
 
     // 4. ACTUALIZAR (PUT /questions/{id})
     @PutMapping("/{id}")
