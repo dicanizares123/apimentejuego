@@ -1,14 +1,20 @@
 package com.puce.apimentejuego.models.responses
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class QuestionWithOptionsResponse(
-    val id_question: Long,
+    @JsonProperty("question_id")
+    val questionId: Long,
     val question: String,
-    val category_id: Long,
+    @JsonProperty("category_id")
+    val categoryId: Long,
     val options: List<OptionSimpleResponse>
 )
 
 data class OptionSimpleResponse(
-    val question_option_id: Long, // ID de question_options
-    val possible_answer: String
+    @JsonProperty("question_option_id")
+    val questionOptionId: Long, // ID de question_options
+    @JsonProperty("possible_answer")
+    val possibleAnswer: String
 )
 

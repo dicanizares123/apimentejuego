@@ -95,15 +95,15 @@ class QuestionOptionService(
         return selectedQuestions.map { question ->
             val options = question.questionOptions.map { qo ->
                 OptionSimpleResponse(
-                    question_option_id = qo.id, // ID de la relación (question_options)
-                    possible_answer = qo.option.possibleAnswer // Texto de la opción
+                    questionOptionId = qo.id, // ID de la relación (question_options)
+                    possibleAnswer = qo.option.possibleAnswer // Texto de la opción
                 )
             }
 
             QuestionWithOptionsResponse(
-                id_question = question.id,
+                questionId = question.id,
                 question = question.question,
-                category_id = question.category.id,
+                categoryId = question.category.id,
                 options = options
             )
         }
