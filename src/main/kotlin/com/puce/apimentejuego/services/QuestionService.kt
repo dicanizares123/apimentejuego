@@ -1,17 +1,17 @@
 package com.puce.apimentejuego.services
 
-import com.puce.apimentejuego.mappers.QuestionsMapper
+import com.puce.apimentejuego.mappers.QuestionMapper
 import com.puce.apimentejuego.models.requests.QuestionRequest
 import com.puce.apimentejuego.models.responses.QuestionResponse
-import com.puce.apimentejuego.repositories.CategoyRepositoy
+import com.puce.apimentejuego.repositories.CategoryRepository
 import com.puce.apimentejuego.repositories.QuestionRepository
 import org.springframework.stereotype.Service
 
 @Service
 class QuestionService(
     private val questionRepository: QuestionRepository,
-    private val questionsMapper: QuestionsMapper,
-    private val categoryRepository: CategoyRepositoy
+    private val questionMapper: QuestionMapper,
+    private val categoryRepository: CategoryRepository
 ) {
 
     // C: Create
@@ -19,23 +19,23 @@ class QuestionService(
         val category = categoryRepository.findById(request.categoryId)
             .orElseThrow { NoSuchElementException("Category with ID ${request.categoryId} not found") }
 
-        val entity = questionsMapper.toEntity(request, category)
+        val entity = questionMapper.toEntity(request, category)
         val savedQuestion = questionRepository.save(entity)
 
-        return questionsMapper.toResponse(savedQuestion)
+        return questionMapper.toResponse(savedQuestion)
     }
 
     // R: Read By ID
     fun findById(id: Long): QuestionResponse {
         val foundQuestion = questionRepository.findById(id)
             .orElseThrow { NoSuchElementException("Question with ID $id not found") }
-        return questionsMapper.toResponse(foundQuestion)
+        return questionMapper.toResponse(foundQuestion)
     }
 
     // R: Read All
     fun findAll(): List<QuestionResponse> {
         return questionRepository.findAll()
-            .map { questionsMapper.toResponse(it) }
+            .map { questionMapper.toResponse(it) }
     }
 
 
@@ -56,7 +56,7 @@ class QuestionService(
         existingQuestion.isActive = request.isActive
 
         val updatedQuestion = questionRepository.save(existingQuestion)
-        return questionsMapper.toResponse(updatedQuestion)
+        return questionMapper.toResponse(updatedQuestion)
     }
 
     // D: Delete

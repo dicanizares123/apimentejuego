@@ -5,7 +5,7 @@ import com.puce.apimentejuego.models.requests.QuestionOptionRequest
 import com.puce.apimentejuego.models.responses.OptionSimpleResponse
 import com.puce.apimentejuego.models.responses.QuestionOptionResponse
 import com.puce.apimentejuego.models.responses.QuestionWithOptionsResponse
-import com.puce.apimentejuego.repositories.CategoyRepositoy
+import com.puce.apimentejuego.repositories.CategoryRepository
 import com.puce.apimentejuego.repositories.OptionRepository
 import com.puce.apimentejuego.repositories.QuestionOptionRepository
 import com.puce.apimentejuego.repositories.QuestionRepository
@@ -17,7 +17,7 @@ class QuestionOptionService(
     private val questionRepository: QuestionRepository,
     private val optionRepository: OptionRepository,
     private val questionOptionMapper: QuestionOptionMapper,
-    private val categoryRepository: CategoyRepositoy
+    private val categoryRepository: CategoryRepository
 ) {
 
     // C: Create

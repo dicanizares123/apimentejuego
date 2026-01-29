@@ -3,13 +3,12 @@ package com.puce.apimentejuego.mappers
 import com.puce.apimentejuego.models.entities.Category
 import com.puce.apimentejuego.models.entities.Question
 import com.puce.apimentejuego.models.requests.QuestionRequest
-import com.puce.apimentejuego.models.responses.CategoryResponse
 import com.puce.apimentejuego.models.responses.QuestionResponse
 import org.springframework.stereotype.Component
 
 
 @Component
-class QuestionsMapper {
+class QuestionMapper {
 
     fun toEntity(request: QuestionRequest, category: Category): Question{
         return Question(

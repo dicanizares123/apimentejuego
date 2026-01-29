@@ -2,13 +2,13 @@ package com.puce.apimentejuego.services
 import com.puce.apimentejuego.mappers.CategoryMapper
 import com.puce.apimentejuego.models.requests.CategoryRequest
 import com.puce.apimentejuego.models.responses.CategoryResponse
-import com.puce.apimentejuego.repositories.CategoyRepositoy
+import com.puce.apimentejuego.repositories.CategoryRepository
 import org.springframework.stereotype.Service
 
 
 @Service
 class CategoryService (
-    private val categoryRepository: CategoyRepositoy,
+    private val categoryRepository: CategoryRepository,
     private val categoryMapper: CategoryMapper
 ){
 

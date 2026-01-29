@@ -3,7 +3,7 @@ package com.puce.apimentejuego.services
 import com.puce.apimentejuego.mappers.GameMapper
 import com.puce.apimentejuego.models.requests.GameRequest
 import com.puce.apimentejuego.models.responses.GameResponse
-import com.puce.apimentejuego.repositories.CategoyRepositoy
+import com.puce.apimentejuego.repositories.CategoryRepository
 import com.puce.apimentejuego.repositories.GameRepository
 import com.puce.apimentejuego.repositories.UserRepository
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class GameService(
     private val gameRepository: GameRepository,
     private val userRepository: UserRepository,
-    private val categoryRepository: CategoyRepositoy,
+    private val categoryRepository: CategoryRepository,
     private val gameMapper: GameMapper,
     private val gameAnswerRepository: GameAnswerRepository,
     private val questionOptionRepository: QuestionOptionRepository,
