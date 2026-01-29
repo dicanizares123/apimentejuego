@@ -47,8 +47,8 @@ class UserServiceTest {
         val request = UserRequest("Ariel", "Test", "ariel123", "a@a.com", "123")
 
         // Usamos datos dummy completos para evitar errores
-        val userEntity = createUserDummy(0L) // Sin ID aun
-        val savedUser = createUserDummy(1L)  // Con ID
+        val userEntity = createUserDummy(0L)
+        val savedUser = createUserDummy(1L)
 
         val expectedResponse = UserResponse(
             id = 1L,
@@ -123,10 +123,7 @@ class UserServiceTest {
         )
 
         `when`(userRepositoryMock.findById(userId)).thenReturn(Optional.of(existingUser))
-
-        // CORRECCIÓN: Quitamos any() y usamos el objeto específico 'existingUser'
         `when`(userRepositoryMock.save(existingUser)).thenReturn(updatedUser)
-        // CORRECCIÓN: Quitamos any() y usamos el objeto específico 'updatedUser'
         `when`(userMapperMock.toResponse(updatedUser)).thenReturn(expectedResponse)
 
         val result = userService.update(userId, request)
@@ -158,7 +155,7 @@ class UserServiceTest {
         verify(userRepositoryMock, never()).deleteById(anyLong())
     }
 
-    // --- TEST: FIND ALL (CORREGIDO - Donde te salía el error) ---
+    // --- TEST: FIND ALL ---
     @Test
     fun `SHOULD return a list of users`() {
         val userList = listOf(createUserDummy(1L))
@@ -173,9 +170,6 @@ class UserServiceTest {
         ))
 
         `when`(userRepositoryMock.findAll()).thenReturn(userList)
-
-        // CORRECCIÓN: Aquí estaba el error. Quitamos any() y ponemos userList[0]
-        // Le decimos: "Cuando el mapper reciba ESTE usuario de la lista, devuelve ESTA respuesta"
         `when`(userMapperMock.toResponse(userList[0])).thenReturn(responseList[0])
 
         val result = userService.findAll()

@@ -21,14 +21,14 @@ import java.util.Optional
 
 class QuestionOptionServiceTest {
 
-    // 1. Mocks (Dependencias)
+    // 1. Mocks
     private lateinit var questionOptionRepository: QuestionOptionRepository
     private lateinit var questionRepository: QuestionRepository
     private lateinit var optionRepository: OptionRepository
     private lateinit var questionOptionMapper: QuestionOptionMapper
     private lateinit var categoryRepository: CategoryRepository
 
-    // 2. Servicio (SUT)
+    // 2. Servicio
     private lateinit var questionOptionService: QuestionOptionService
 
     @BeforeEach
@@ -48,7 +48,7 @@ class QuestionOptionServiceTest {
         )
     }
 
-    // --- HELPER METHODS (Evitar errores de campos vacíos) ---
+    // --- HELPER METHODS ---
 
     private fun createCategoryDummy(id: Long): Category {
         return Category(
@@ -162,7 +162,7 @@ class QuestionOptionServiceTest {
         verify(questionOptionRepository).deleteById(id)
     }
 
-    // --- TEST: GET QUESTIONS WITH OPTIONS (Lógica Personalizada) ---
+    // --- TEST: GET QUESTIONS WITH OPTIONS ---
     @Test
     fun `SHOULD return randomized questions with options GIVEN valid category`() {
         val categoryId = 1L

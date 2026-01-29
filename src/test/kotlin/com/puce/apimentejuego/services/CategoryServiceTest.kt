@@ -57,8 +57,8 @@ class CategoryServiceTest {
             duration_in_minutes = 15
         )
 
-        val categoryEntity = createCategoryDummy(0L) // Sin ID
-        val savedEntity = createCategoryDummy(1L)    // Con ID
+        val categoryEntity = createCategoryDummy(0L)
+        val savedEntity = createCategoryDummy(1L)
 
         val expectedResponse = CategoryResponse(
             id = 1L,
@@ -70,8 +70,6 @@ class CategoryServiceTest {
             title = "Historia",
             duration_in_minutes = 15
         )
-
-        // Configuración de Mocks sin 'any()'
         `when`(categoryMapperMock.toEntity(request)).thenReturn(categoryEntity)
         `when`(categoryRepositoryMock.save(categoryEntity)).thenReturn(savedEntity)
         `when`(categoryMapperMock.toResponse(savedEntity)).thenReturn(expectedResponse)
@@ -118,15 +116,13 @@ class CategoryServiceTest {
         }
     }
 
-    // --- TEST: FIND ALL (CORREGIDO - Donde fallaba antes) ---
+    // --- TEST: FIND ALL ---
     @Test
     fun `SHOULD return a list of categories`() {
         val categoryList = listOf(createCategoryDummy(1L))
         val response = CategoryResponse(1L, "slug", 5, "desc", "short", "Easy", "Title", 10)
 
         `when`(categoryRepositoryMock.findAll()).thenReturn(categoryList)
-
-        // CORRECCIÓN: Usamos categoryList[0] en vez de any()
         `when`(categoryMapperMock.toResponse(categoryList[0])).thenReturn(response)
 
         val result = categoryService.findAll()

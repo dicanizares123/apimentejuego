@@ -111,7 +111,7 @@ class QuestionServiceTest {
         assertEquals(questionId, result.id)
     }
 
-    // --- TEST: UPDATE (CORREGIDO - Sin any()) ---
+    // --- TEST: UPDATE ---
     @Test
     fun `SHOULD update question fields GIVEN valid request`() {
         val questionId = 10L
@@ -121,8 +121,6 @@ class QuestionServiceTest {
 
         val category = createCategoryDummy(categoryId)
         val existingQuestion = createQuestionDummy(questionId, category)
-
-        // El servicio modifica existingQuestion en memoria
         val updatedQuestion = createQuestionDummy(questionId, category).apply {
             question = "Nueva Pregunta"
             explanation = "Nueva Exp"
@@ -132,8 +130,6 @@ class QuestionServiceTest {
         val expectedResponse = QuestionResponse(questionId, categoryId, "Nueva Pregunta", "Nueva Exp", false)
 
         `when`(questionRepositoryMock.findById(questionId)).thenReturn(Optional.of(existingQuestion))
-
-        // CORRECCIÓN: Usamos 'existingQuestion' que es el objeto que se está modificando
         `when`(questionRepositoryMock.save(existingQuestion)).thenReturn(updatedQuestion)
         `when`(questionMapperMock.toResponse(updatedQuestion)).thenReturn(expectedResponse)
 
@@ -143,7 +139,7 @@ class QuestionServiceTest {
         verify(categoryRepositoryMock, never()).findById(anyLong())
     }
 
-    // --- TEST: UPDATE (CORREGIDO - Sin any()) ---
+    // --- TEST: UPDATE ---
     @Test
     fun `SHOULD update category GIVEN request with different category id`() {
         val questionId = 10L
@@ -159,12 +155,10 @@ class QuestionServiceTest {
 
         `when`(questionRepositoryMock.findById(questionId)).thenReturn(Optional.of(existingQuestion))
         `when`(categoryRepositoryMock.findById(newCategoryId)).thenReturn(Optional.of(newCategory))
-
-        // CORRECCIÓN: Usamos 'existingQuestion' explícitamente
         `when`(questionRepositoryMock.save(existingQuestion)).thenReturn(existingQuestion)
 
         val response = QuestionResponse(questionId, newCategoryId, "Q", "E", true)
-        // CORRECCIÓN: Usamos 'existingQuestion'
+
         `when`(questionMapperMock.toResponse(existingQuestion)).thenReturn(response)
 
         questionService.update(questionId, request)
@@ -195,7 +189,7 @@ class QuestionServiceTest {
         }
     }
 
-    // --- TEST: FIND ALL (CORREGIDO - Sin any()) ---
+    // --- TEST: FIND ALL  ---
     @Test
     fun `SHOULD return list of questions`() {
         val category = createCategoryDummy(1L)
@@ -203,8 +197,6 @@ class QuestionServiceTest {
         val response = QuestionResponse(1L, 1L, "Q", "E", true)
 
         `when`(questionRepositoryMock.findAll()).thenReturn(list)
-
-        // CORRECCIÓN: Usamos list[0] en vez de any()
         `when`(questionMapperMock.toResponse(list[0])).thenReturn(response)
 
         val result = questionService.findAll()

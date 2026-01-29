@@ -84,15 +84,13 @@ class OptionServiceTest {
         }
     }
 
-    // --- TEST: FIND ALL (CORREGIDO - Donde salía el error) ---
+    // --- TEST: FIND ALL ---
     @Test
     fun `SHOULD return a list of options`() {
         val list = listOf(createOptionDummy(1L))
         val response = OptionResponse(1L, "R")
 
         `when`(optionRepositoryMock.findAll()).thenReturn(list)
-
-        // CORRECCIÓN: Usamos el objeto real (list[0]) en lugar de any()
         `when`(optionMapperMock.toResponse(list[0])).thenReturn(response)
 
         val result = optionService.findAll()
@@ -101,7 +99,7 @@ class OptionServiceTest {
         assertEquals(1, result.size)
     }
 
-    // --- TEST: UPDATE (CORREGIDO) ---
+    // --- TEST: UPDATE ---
     @Test
     fun `SHOULD update an option GIVEN a valid id and request`() {
         val optionId = 1L
@@ -117,8 +115,6 @@ class OptionServiceTest {
         val expectedResponse = OptionResponse(optionId, "Respuesta Actualizada")
 
         `when`(optionRepositoryMock.findById(optionId)).thenReturn(Optional.of(existingOption))
-
-        // CORRECCIÓN: Quitamos any() y usamos existingOption que es lo que el servicio guarda
         `when`(optionRepositoryMock.save(existingOption)).thenReturn(updatedOption)
         `when`(optionMapperMock.toResponse(updatedOption)).thenReturn(expectedResponse)
 

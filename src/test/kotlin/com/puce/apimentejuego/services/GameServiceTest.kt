@@ -50,7 +50,7 @@ class GameServiceTest {
         )
     }
 
-    // --- HELPER METHODS (Ayudantes para crear datos de prueba) ---
+    // --- HELPER METHODS---
 
     private fun createUserDummy(id: Long): User {
         return User(
@@ -84,7 +84,7 @@ class GameServiceTest {
     }
 
     private fun createOptionDummy(id: Long, question: Question, correct: Boolean): QuestionOption {
-        // Creamos la entidad Option primero (para evitar el error de String vs Option)
+        // Creamos la entidad Option primero
         val optionEntity = Option(
             possibleAnswer = "Respuesta Posible $id"
         ).apply { this.id = id }
@@ -214,7 +214,7 @@ class GameServiceTest {
         assertEquals(0, result.totalScore)
     }
 
-    // TEST 6: Verificar integridad (Que la opción pertenezca a la pregunta)
+    // TEST 6: Verificar integridad
     @Test
     fun `SHOULD throw IllegalArgumentException if option does not belong to question`() {
         val user = createUserDummy(1L)
