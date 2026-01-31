@@ -26,7 +26,6 @@ class GameMapper {
             categoryId = game.category.id,
             score = game.score,
             startedAt = game.startedAt,
-            finishedAt = game.finishedAt
         )
     }
 }

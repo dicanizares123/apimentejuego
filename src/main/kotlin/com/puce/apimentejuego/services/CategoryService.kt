@@ -1,4 +1,7 @@
 package com.puce.apimentejuego.services
+
+import com.puce.apimentejuego.exceptions.CategoryNotFoundException
+import com.puce.apimentejuego.exceptions.MissingParameterException
 import com.puce.apimentejuego.mappers.CategoryMapper
 import com.puce.apimentejuego.models.requests.CategoryRequest
 import com.puce.apimentejuego.models.responses.CategoryResponse
@@ -14,6 +17,29 @@ class CategoryService (
 
     // C: Create
     fun save(request: CategoryRequest): CategoryResponse {
+        // Validar campos requeridos
+        if (request.slug.isNullOrBlank()) {
+            throw MissingParameterException("Field 'slug' is required and cannot be blank")
+        }
+        if (request.title.isNullOrBlank()) {
+            throw MissingParameterException("Field 'title' is required and cannot be blank")
+        }
+        if (request.description.isNullOrBlank()) {
+            throw MissingParameterException("Field 'description' is required and cannot be blank")
+        }
+        if (request.shortDescription.isNullOrBlank()) {
+            throw MissingParameterException("Field 'short_description' is required and cannot be blank")
+        }
+        if (request.difficulty.isNullOrBlank()) {
+            throw MissingParameterException("Field 'difficulty' is required and cannot be blank")
+        }
+        if (request.questionsPerGame == null || request.questionsPerGame <= 0) {
+            throw MissingParameterException("Field 'questions_per_game' is required and must be greater than 0")
+        }
+        if (request.duration_in_minutes == null || request.duration_in_minutes <= 0) {
+            throw MissingParameterException("Field 'duration_in_minutes' is required and must be greater than 0")
+        }
+
         val entity = categoryMapper.toEntity(request)
         val savedCategory = categoryRepository.save(entity)
 
@@ -25,7 +51,7 @@ class CategoryService (
     // R: Read By ID
     fun findById(id: Long): CategoryResponse {
         val foundCategory = categoryRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Category with ID $id not found") }
+            .orElseThrow { CategoryNotFoundException("Category with ID $id not found") }
         return categoryMapper.toResponse(foundCategory)
     }
 
@@ -36,8 +62,31 @@ class CategoryService (
     }
 
     fun update(id: Long, request: CategoryRequest): CategoryResponse{
+        // Validar campos requeridos
+        if (request.slug.isNullOrBlank()) {
+            throw MissingParameterException("Field 'slug' is required and cannot be blank")
+        }
+        if (request.title.isNullOrBlank()) {
+            throw MissingParameterException("Field 'title' is required and cannot be blank")
+        }
+        if (request.description.isNullOrBlank()) {
+            throw MissingParameterException("Field 'description' is required and cannot be blank")
+        }
+        if (request.shortDescription.isNullOrBlank()) {
+            throw MissingParameterException("Field 'short_description' is required and cannot be blank")
+        }
+        if (request.difficulty.isNullOrBlank()) {
+            throw MissingParameterException("Field 'difficulty' is required and cannot be blank")
+        }
+        if (request.questionsPerGame == null || request.questionsPerGame <= 0) {
+            throw MissingParameterException("Field 'questions_per_game' is required and must be greater than 0")
+        }
+        if (request.duration_in_minutes == null || request.duration_in_minutes <= 0) {
+            throw MissingParameterException("Field 'duration_in_minutes' is required and must be greater than 0")
+        }
+
         val existingCategory = categoryRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Category with ID $id not found") }
+            .orElseThrow { CategoryNotFoundException("Category with ID $id not found") }
 
         // 2. Actualizar campos manualmente
         existingCategory.slug = request.slug
@@ -55,7 +104,7 @@ class CategoryService (
     // D: Delete
     fun deleteById(id: Long){
         if(!categoryRepository.existsById(id)){
-            throw NoSuchElementException("Category with ID $id not found")
+            throw CategoryNotFoundException("Category with ID $id not found")
         }
 
         categoryRepository.deleteById(id)

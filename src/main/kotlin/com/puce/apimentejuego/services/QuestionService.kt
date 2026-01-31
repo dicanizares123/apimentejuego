@@ -1,5 +1,8 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.CategoryNotFoundException
+import com.puce.apimentejuego.exceptions.MissingParameterException
+import com.puce.apimentejuego.exceptions.QuestionIdNotFoundException
 import com.puce.apimentejuego.mappers.QuestionMapper
 import com.puce.apimentejuego.models.requests.QuestionRequest
 import com.puce.apimentejuego.models.responses.QuestionResponse
@@ -16,8 +19,20 @@ class QuestionService(
 
     // C: Create
     fun save(request: QuestionRequest): QuestionResponse {
+        // Validar campos requeridos
+        if (request.categoryId == null) {
+            throw MissingParameterException("Field 'category_id' is required")
+        }
+        if (request.question.isNullOrBlank()) {
+            throw MissingParameterException("Field 'question' is required and cannot be blank")
+        }
+        if (request.explanation.isNullOrBlank()) {
+            throw MissingParameterException("Field 'explanation' is required and cannot be blank")
+        }
+
+
         val category = categoryRepository.findById(request.categoryId)
-            .orElseThrow { NoSuchElementException("Category with ID ${request.categoryId} not found") }
+            .orElseThrow { CategoryNotFoundException("Category with ID ${request.categoryId} not found") }
 
         val entity = questionMapper.toEntity(request, category)
         val savedQuestion = questionRepository.save(entity)
@@ -28,7 +43,7 @@ class QuestionService(
     // R: Read By ID
     fun findById(id: Long): QuestionResponse {
         val foundQuestion = questionRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Question with ID $id not found") }
+            .orElseThrow { QuestionIdNotFoundException("Question with ID $id not found") }
         return questionMapper.toResponse(foundQuestion)
     }
 
@@ -41,19 +56,30 @@ class QuestionService(
 
     // U: Update
     fun update(id: Long, request: QuestionRequest): QuestionResponse {
+        // Validar campos requeridos
+        if (request.categoryId == null) {
+            throw MissingParameterException("Field 'category_id' is required")
+        }
+        if (request.question.isNullOrBlank()) {
+            throw MissingParameterException("Field 'question' is required and cannot be blank")
+        }
+        if (request.explanation.isNullOrBlank()) {
+            throw MissingParameterException("Field 'explanation' is required and cannot be blank")
+        }
+
+
         val existingQuestion = questionRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Question with ID $id not found") }
+            .orElseThrow { QuestionIdNotFoundException("Question with ID $id not found") }
 
         // Si cambia la categoría, necesitamos buscar la nueva entidad Category
         if (existingQuestion.category.id != request.categoryId) {
             val newCategory = categoryRepository.findById(request.categoryId)
-                .orElseThrow { NoSuchElementException("Category with ID ${request.categoryId} not found") }
+                .orElseThrow { CategoryNotFoundException("Category with ID ${request.categoryId} not found") }
             existingQuestion.category = newCategory
         }
 
         existingQuestion.question = request.question
         existingQuestion.explanation = request.explanation
-        existingQuestion.isActive = request.isActive
 
         val updatedQuestion = questionRepository.save(existingQuestion)
         return questionMapper.toResponse(updatedQuestion)
@@ -62,7 +88,7 @@ class QuestionService(
     // D: Delete
     fun deleteById(id: Long) {
         if (!questionRepository.existsById(id)) {
-            throw NoSuchElementException("Question with ID $id not found")
+            throw QuestionIdNotFoundException("Question with ID $id not found")
         }
         questionRepository.deleteById(id)
     }

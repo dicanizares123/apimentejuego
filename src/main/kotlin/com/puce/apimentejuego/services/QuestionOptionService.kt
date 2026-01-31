@@ -1,5 +1,10 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.CategoryNotFoundException
+import com.puce.apimentejuego.exceptions.MissingParameterException
+import com.puce.apimentejuego.exceptions.OptionIdNotFoundException
+import com.puce.apimentejuego.exceptions.QuestionIdNotFoundException
+import com.puce.apimentejuego.exceptions.QuestionOptionNotFoundException
 import com.puce.apimentejuego.mappers.QuestionOptionMapper
 import com.puce.apimentejuego.models.requests.QuestionOptionRequest
 import com.puce.apimentejuego.models.responses.OptionSimpleResponse
@@ -22,11 +27,20 @@ class QuestionOptionService(
 
     // C: Create
     fun save(request: QuestionOptionRequest): QuestionOptionResponse {
+        if (request.questionId == null) {
+            throw MissingParameterException("Field 'question_id' is required")
+        }
+        if (request.optionId == null) {
+            throw MissingParameterException("Field 'option_id' is required")
+        }
+        if (request.isCorrect == null) {
+            throw MissingParameterException("Field 'is_correct' is required")
+        }
         val question = questionRepository.findById(request.questionId)
-            .orElseThrow { NoSuchElementException("Question with ID ${request.questionId} not found") }
+            .orElseThrow { QuestionIdNotFoundException("Question with ID ${request.questionId} not found") }
 
         val option = optionRepository.findById(request.optionId)
-            .orElseThrow { NoSuchElementException("Option with ID ${request.optionId} not found") }
+            .orElseThrow { OptionIdNotFoundException("Option with ID ${request.optionId} not found") }
 
         val entity = questionOptionMapper.toEntity(request, question, option)
         val savedEntity = questionOptionRepository.save(entity)
@@ -37,7 +51,7 @@ class QuestionOptionService(
     // R: Read By ID
     fun findById(id: Long): QuestionOptionResponse {
         val entity = questionOptionRepository.findById(id)
-            .orElseThrow { NoSuchElementException("QuestionOption with ID $id not found") }
+            .orElseThrow { QuestionOptionNotFoundException("QuestionOption with ID $id not found") }
         return questionOptionMapper.toResponse(entity)
     }
 
@@ -49,18 +63,29 @@ class QuestionOptionService(
 
     // U: Update
     fun update(id: Long, request: QuestionOptionRequest): QuestionOptionResponse {
+        // Validar campos requeridos
+        if (request.questionId == null) {
+            throw MissingParameterException("Field 'question_id' is required")
+        }
+        if (request.optionId == null) {
+            throw MissingParameterException("Field 'option_id' is required")
+        }
+        if (request.isCorrect == null) {
+            throw MissingParameterException("Field 'is_correct' is required")
+        }
+
         val existingEntity = questionOptionRepository.findById(id)
-            .orElseThrow { NoSuchElementException("QuestionOption with ID $id not found") }
+            .orElseThrow { QuestionOptionNotFoundException("QuestionOption with ID $id not found") }
 
         if (existingEntity.question.id != request.questionId) {
             val newQuestion = questionRepository.findById(request.questionId)
-                .orElseThrow { NoSuchElementException("Question with ID ${request.questionId} not found") }
+                .orElseThrow { QuestionIdNotFoundException("Question with ID ${request.questionId} not found") }
             existingEntity.question = newQuestion
         }
 
         if (existingEntity.option.id != request.optionId) {
             val newOption = optionRepository.findById(request.optionId)
-                .orElseThrow { NoSuchElementException("Option with ID ${request.optionId} not found") }
+                .orElseThrow { OptionIdNotFoundException("Option with ID ${request.optionId} not found") }
             existingEntity.option = newOption
         }
 
@@ -73,16 +98,16 @@ class QuestionOptionService(
     // D: Delete
     fun deleteById(id: Long) {
         if (!questionOptionRepository.existsById(id)) {
-            throw NoSuchElementException("QuestionOption with ID $id not found")
+            throw QuestionOptionNotFoundException("QuestionOption with ID $id not found")
         }
         questionOptionRepository.deleteById(id)
     }
 
     // Custom Endpoint: Get Questions with Options structure (Randomized by Category limit)
-    fun getQuestionsWithOptions(categoryId: Long): List<QuestionWithOptionsResponse> {
+    fun getQuestionsWithOptionsPerCategory(categoryId: Long): List<QuestionWithOptionsResponse> {
         // 1. Obtener la categoría para saber el límite de preguntas (questionsPerGame)
         val category = categoryRepository.findById(categoryId)
-            .orElseThrow { NoSuchElementException("Category with ID $categoryId not found") }
+            .orElseThrow { CategoryNotFoundException("Category with ID $categoryId not found") }
 
         // 2. Obtener todas las preguntas de esa categoría
         val allQuestions = questionRepository.findByCategoryId(categoryId)

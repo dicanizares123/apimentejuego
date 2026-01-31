@@ -12,7 +12,6 @@ data class GameResponse(
     val score: Int,
     @JsonProperty("started_at")
     val startedAt: LocalDateTime,
-    @JsonProperty("finished_at")
-    val finishedAt: LocalDateTime?
+
 )
 

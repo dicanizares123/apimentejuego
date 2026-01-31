@@ -11,13 +11,13 @@ class CategoryMapper {
 
     fun toEntity(request: CategoryRequest): Category{
         return Category(
-            slug = request.slug,
-            questionsPerGame = request.questionsPerGame,
-            description = request.description,
-            shortDescription = request.shortDescription,
-            difficulty = request.difficulty,
-            title = request.title,
-            duration_in_minutes = request.duration_in_minutes
+            slug = request.slug!!,
+            questionsPerGame = request.questionsPerGame!!,
+            description = request.description!!,
+            shortDescription = request.shortDescription!!,
+            difficulty = request.difficulty!!,
+            title = request.title!!,
+            duration_in_minutes = request.duration_in_minutes!!
         )
     }
 

@@ -14,7 +14,7 @@ class QuestionOptionMapper {
         return QuestionOption(
             question = question,
             option = option,
-            isCorrect = request.isCorrect
+            isCorrect = request.isCorrect!!
         )
     }
 

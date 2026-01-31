@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component
 class UserMapper {
     fun toEntity(request: UserRequest): User{
         return User(
-            firstName = request.firstName,
-            lastName = request.lastName,
-            username = request.username,
-            email = request.email,
-            password = request.password,
+            firstName = request.firstName!!,
+            lastName = request.lastName!!,
+            username = request.username!!,
+            email = request.email!!,
+            password = request.password!!,
         )
     }
 

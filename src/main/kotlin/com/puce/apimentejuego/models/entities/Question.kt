@@ -35,7 +35,7 @@ data class Question(
     var explanation: String,
 
     @Column(name = "is_active", nullable = false)
-    var isActive: Boolean
+    var isActive: Boolean = true
 ): BaseEntity(){
     // Relación Uno a Muchos: Una pregunta puede tener muchas opciones a través de QuestionOptions
     // mappedBy = "question" debe coincidir con el nombre de la variable en QuestionOptions.kt

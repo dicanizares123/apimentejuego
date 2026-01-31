@@ -20,7 +20,5 @@ data class Game(
     @Column(name = "started_at", nullable = false)
     var startedAt: LocalDateTime = LocalDateTime.now(),
 
-    @Column(name = "finished_at")
-    var finishedAt: LocalDateTime? = null
 
 ) : BaseEntity()

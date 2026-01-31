@@ -1,5 +1,7 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.MissingParameterException
+import com.puce.apimentejuego.exceptions.OptionIdNotFoundException
 import com.puce.apimentejuego.mappers.OptionMapper
 import com.puce.apimentejuego.models.entities.Option
 import com.puce.apimentejuego.models.requests.OptionRequest
@@ -16,6 +18,11 @@ class OptionService(
 ) {
     // C: Create
     fun save (request: OptionRequest): OptionResponse{
+        // Validar campos requeridos
+        if (request.possibleAnswer.isNullOrBlank()) {
+            throw MissingParameterException("Field 'possible_answer' is required and cannot be blank")
+        }
+
         val entity = optionMapper.toEntity(request)
         val savedOption = optionRepository.save(entity)
 
@@ -26,7 +33,7 @@ class OptionService(
     // R: Read By ID
     fun findById(id: Long): OptionResponse{
         val foundOption = optionRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Option with ID $id not found") }
+            .orElseThrow { OptionIdNotFoundException("Option with ID $id not found") }
         return optionMapper.toResponse(foundOption)
     }
 
@@ -38,8 +45,13 @@ class OptionService(
 
     // u: Update
     fun update(id: Long, request: OptionRequest): OptionResponse{
+        // Validar campos requeridos
+        if (request.possibleAnswer.isNullOrBlank()) {
+            throw MissingParameterException("Field 'possible_answer' is required and cannot be blank")
+        }
+
         val existingOption = optionRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Option with ID $id not found") }
+            .orElseThrow { OptionIdNotFoundException("Option with ID $id not found") }
 
         // 2. Actualizar campos manualmente
         existingOption.possibleAnswer = request.possibleAnswer
@@ -49,16 +61,18 @@ class OptionService(
 
         return optionMapper.toResponse(updatedOption)
 
-    } fun deleteById(id: Long){
+    }
+
+    // D: Delete
+    fun deleteById(id: Long){
         if (!optionRepository.existsById(id)){
-            throw NoSuchElementException("Option with ID $id not found")
+            throw OptionIdNotFoundException("Option with ID $id not found")
         }
 
         optionRepository.deleteById(id)
 
     }
 
-    // D: Delete
 
 
 

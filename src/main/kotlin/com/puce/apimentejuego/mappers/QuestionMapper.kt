@@ -13,9 +13,8 @@ class QuestionMapper {
     fun toEntity(request: QuestionRequest, category: Category): Question{
         return Question(
             category = category,
-            question = request.question,
-            explanation = request.explanation,
-            isActive = request.isActive
+            question = request.question!!,
+            explanation = request.explanation!!,
         )
     }
 

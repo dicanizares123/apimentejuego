@@ -45,9 +45,9 @@ class QuestionOptionController(
         questionOptionService.deleteById(id)
     }
 
-    // 6. OBTENER PREGUNTAS CON OPCIONES (GET /question-options/with-options/{categoryId})
-    @GetMapping("/with-options/{categoryId}")
+    // 6. OBTENER PREGUNTAS CON OPCIONES FILTRADO POR CATEGORIAS (GET /question-options/with-options/{categoryId})
+    @GetMapping("/per-category/{categoryId}")
     fun getQuestionsWithOptions(@PathVariable categoryId: Long): List<QuestionWithOptionsResponse> {
-        return questionOptionService.getQuestionsWithOptions(categoryId)
+        return questionOptionService.getQuestionsWithOptionsPerCategory(categoryId)
     }
 }

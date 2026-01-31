@@ -11,7 +11,7 @@ class OptionMapper {
 
     fun toEntity(request: OptionRequest): Option {
         return Option(
-            possibleAnswer = request.possibleAnswer
+            possibleAnswer = request.possibleAnswer!!
         )
     }
 

@@ -76,10 +76,96 @@ Te recomiendo seguir este orden para probar:
 2. Inicia un juego (POST /games/start).
 3. Envia respuestas (POST /games/submit).
 
+
+## 6. Hasheo de Contraseñas Implementado
+
+### 1. **Dependencia Agregada** (`build.gradle.kts`)
+```kotlin
+implementation("org.springframework.security:spring-security-crypto")
+```
+Esta dependencia proporciona `BCryptPasswordEncoder` para hashear contraseñas de forma segura.
+
+### 2. **Configuración de Password Encoder** (`PasswordConfig.kt`)
+Se creó un bean de configuración que proporciona una instancia de `BCryptPasswordEncoder`:
+```kotlin
+@Configuration
+class PasswordConfig {
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
+}
+```
+
+### 3. **Modificación del UserService**
+Se inyectó `PasswordEncoder` y se modificaron los métodos:
+
+#### **Método `save()` (Crear Usuario)**
+```kotlin
+fun save(request: UserRequest): UserResponse {
+    val entity = userMapper.toEntity(request)
+    // Hashear la contraseña antes de guardar
+    entity.password = passwordEncoder.encode(request.password) 
+        ?: throw IllegalStateException("Failed to encode password")
+    val savedUser = userRepository.save(entity)
+    return userMapper.toResponse(savedUser)
+}
+```
+
+#### **Método `update()` (Actualizar Usuario)**
+```kotlin
+fun update(id: Long, request: UserRequest): UserResponse {
+    val existingUser = userRepository.findById(id)
+        .orElseThrow { UserNotFoundException(message = "User with ID $id not found") }
+    
+    existingUser.firstName = request.firstName
+    existingUser.lastName = request.lastName
+    existingUser.email = request.email
+    existingUser.username = request.username
+    // Hashear la contraseña al actualizar
+    existingUser.password = passwordEncoder.encode(request.password) 
+        ?: throw IllegalStateException("Failed to encode password")
+    
+    val updatedUser = userRepository.save(existingUser)
+    return userMapper.toResponse(updatedUser)
+}
+```
+
+##  Cómo Funciona BCrypt
+
+**BCrypt** es un algoritmo de hasheo de contraseñas que:
+-  Es **unidireccional** (no se puede revertir)
+-  Genera un **salt** único para cada contraseña
+-  Es **lento intencionalmente** para prevenir ataques de fuerza bruta
+-  Produce hashes diferentes para la misma contraseña
+
+### Ejemplo:
+```
+Contraseña: "miPassword123"
+Hash: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+```
+
+##  Prueba
+
+Ahora cuando cree un usuario con la contraseña `password123`, en la base de datos se guardará algo como:
+```
+$2a$10$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOP
+```
+
+##  Para Verificar Contraseñas (Login)
+
+Cuando implementes el login, usa:
+```kotlin
+passwordEncoder.matches(passwordEnTextoPlano, passwordHasheadaDeDB)
+```
+
+Esto retorna `true` si la contraseña coincide, `false` si no.
+
 ## Stack Tecnologico
 
 * Kotlin
 * Spring Boot 3
 * Gradle (Kotlin DSL)
 * MySQL
-* JUnit 5 y Mockito
+* JUnit 5 y Mockito 
+
