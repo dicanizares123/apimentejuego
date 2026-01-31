@@ -76,8 +76,272 @@ Te recomiendo seguir este orden para probar:
 2. Inicia un juego (POST /games/start).
 3. Envia respuestas (POST /games/submit).
 
+## 6. Ejemplos de Uso de Endpoints Principales
 
-## 6. Hasheo de Contraseñas Implementado
+###  Usuarios (Users)
+
+#### Crear Usuario
+```http
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "first_name": "Juan",
+  "last_name": "Perez",
+  "username": "juanp",
+  "email": "juan@example.com",
+  "password": "miPassword123"
+}
+```
+
+**Respuesta (201 Created):**
+```json
+{
+  "id": 1,
+  "first_name": "Juan",
+  "last_name": "Perez",
+  "username": "juanp",
+  "email": "juan@example.com",
+  "is_active": true
+}
+```
+> **Nota:** La contraseña se hashea automáticamente con BCrypt antes de guardarse.
+
+#### Obtener Todos los Usuarios
+```http
+GET http://localhost:8080/users
+```
+
+#### Obtener Usuario por ID
+```http
+GET http://localhost:8080/users/1
+```
+
+#### Actualizar Usuario
+```http
+PUT http://localhost:8080/users/1
+Content-Type: application/json
+
+{
+  "first_name": "Juan Carlos",
+  "last_name": "Perez",
+  "username": "juanp",
+  "email": "juancarlos@example.com",
+  "password": "nuevaPassword456"
+}
+```
+
+#### Eliminar Usuario
+```http
+DELETE http://localhost:8080/users/1
+```
+
+---
+
+### Categorías (Categories)
+
+#### Crear Categoría
+```http
+POST http://localhost:8080/categories
+Content-Type: application/json
+
+{
+  "slug": "matematicas",
+  "title": "Matemáticas",
+  "description": "Preguntas sobre álgebra, geometría y cálculo",
+  "short_description": "Pon a prueba tus conocimientos matemáticos",
+  "difficulty": "medium",
+  "questions_per_game": 10,
+  "duration_in_minutes": 15
+}
+```
+
+**Respuesta (201 Created):**
+```json
+{
+  "id": 1,
+  "slug": "matematicas",
+  "title": "Matemáticas",
+  "description": "Preguntas sobre álgebra, geometría y cálculo",
+  "short_description": "Pon a prueba tus conocimientos matemáticos",
+  "difficulty": "medium",
+  "questions_per_game": 10,
+  "duration_in_minutes": 15
+}
+```
+
+#### Obtener Todas las Categorías
+```http
+GET http://localhost:8080/categories
+```
+
+#### Obtener Categoría por ID
+```http
+GET http://localhost:8080/categories/1
+```
+
+---
+
+### Preguntas (Questions)
+
+#### Crear Pregunta
+```http
+POST http://localhost:8080/questions
+Content-Type: application/json
+
+{
+  "category_id": 1,
+  "question": "¿Cuánto es 2 + 2?",
+  "explanation": "La suma de dos más dos siempre es cuatro"
+}
+```
+
+**Respuesta (201 Created):**
+```json
+{
+  "id": 1,
+  "category_id": 1,
+  "question": "¿Cuánto es 2 + 2?",
+  "explanation": "La suma de dos más dos siempre es cuatro"
+}
+```
+
+#### Obtener Todas las Preguntas
+```http
+GET http://localhost:8080/questions
+```
+
+#### Obtener Pregunta por ID
+```http
+GET http://localhost:8080/questions/1
+```
+
+---
+
+###  Juegos (Games)
+
+#### Iniciar o Reanudar Juego
+```http
+POST http://localhost:8080/games/start
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "category_id": 1
+}
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "game_id": 1,
+  "user_id": 1,
+  "category_id": 1,
+  "status": "in_progress",
+  "score": 0,
+  "questions": [
+    {
+      "question_id": 1,
+      "question_text": "¿Cuánto es 2 + 2?",
+      "options": [
+        { "option_id": 1, "option_text": "3" },
+        { "option_id": 2, "option_text": "4" },
+        { "option_id": 3, "option_text": "5" }
+      ]
+    }
+  ]
+}
+```
+
+#### Enviar Respuestas
+```http
+POST http://localhost:8080/games/submit
+Content-Type: application/json
+
+{
+  "game_id": 1,
+  "answers": [
+    {
+      "question_id": 1,
+      "selected_option_id": 2
+    },
+    {
+      "question_id": 2,
+      "selected_option_id": 5
+    }
+  ]
+}
+```
+
+**Respuesta (200 OK):**
+```json
+{
+  "game_id": 1,
+  "status": "completed",
+  "score": 80,
+  "total_questions": 10,
+  "correct_answers": 8,
+  "incorrect_answers": 2
+}
+```
+
+#### Obtener Puntuaciones por Categorías
+```http
+GET http://localhost:8080/games/scores?userId=1&categoryIds=1,2,3
+```
+
+**Respuesta (200 OK):**
+```json
+[
+  {
+    "game_id": 1,
+    "user_id": 1,
+    "category_id": 1,
+    "score": 80,
+    "status": "completed"
+  },
+  {
+    "game_id": 2,
+    "user_id": 1,
+    "category_id": 2,
+    "score": 90,
+    "status": "completed"
+  }
+]
+```
+
+---
+
+### ⚠️ Manejo de Errores
+
+La API devuelve errores en formato JSON con el siguiente esquema:
+
+**Ejemplo - Usuario no encontrado (404):**
+```json
+{
+  "message": "User with ID 999 not found",
+  "timestamp": "2026-01-31T19:30:00"
+}
+```
+
+**Ejemplo - Parámetro faltante (400):**
+```json
+{
+  "message": "Missing required parameter: username",
+  "timestamp": "2026-01-31T19:30:00"
+}
+```
+
+**Ejemplo - Recurso duplicado (409):**
+```json
+{
+  "message": "Username 'juanp' is already taken",
+  "timestamp": "2026-01-31T19:30:00"
+}
+```
+
+
+## 7. Hasheo de Contraseñas Implementado
 
 ### 1. **Dependencia Agregada** (`build.gradle.kts`)
 ```kotlin
@@ -167,5 +431,7 @@ Esto retorna `true` si la contraseña coincide, `false` si no.
 * Spring Boot 3
 * Gradle (Kotlin DSL)
 * MySQL
-* JUnit 5 y Mockito 
+* JUnit 5 y Mockito  
+
+
 
