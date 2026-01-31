@@ -1,5 +1,6 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.UserNotFoundException
 import com.puce.apimentejuego.mappers.GameMapper
 import com.puce.apimentejuego.models.entities.*
 import com.puce.apimentejuego.models.requests.GameRequest
@@ -108,7 +109,7 @@ class GameServiceTest {
 
         val newGame = Game(user = user, category = category)
         val savedGame = Game(user = user, category = category).apply { id = 10L }
-        val expectedResponse = GameResponse(10L, 1L, 1L, 0, LocalDateTime.now(), null)
+        val expectedResponse = GameResponse(10L, 1L, 1L, 0, LocalDateTime.now())
 
         `when`(gameRepository.findByUserIdAndCategoryId(1L, 1L)).thenReturn(Optional.empty())
         `when`(userRepository.findById(1L)).thenReturn(Optional.of(user))
@@ -131,7 +132,7 @@ class GameServiceTest {
         val category = createCategoryDummy(1L)
 
         val existingGame = Game(user, category).apply { id = 55L }
-        val expectedResponse = GameResponse(55L, 1L, 1L, 0, LocalDateTime.now(), null)
+        val expectedResponse = GameResponse(55L, 1L, 1L, 0, LocalDateTime.now(),)
 
         `when`(gameRepository.findByUserIdAndCategoryId(1L, 1L)).thenReturn(Optional.of(existingGame))
         `when`(gameMapper.toResponse(existingGame)).thenReturn(expectedResponse)
@@ -144,12 +145,12 @@ class GameServiceTest {
 
     // TEST 3: Verificar manejo de errores (Usuario no encontrado)
     @Test
-    fun `SHOULD throw NoSuchElementException when user not found`() {
+    fun `SHOULD throw UserNotFoundException when user not found`() {
         val request = GameRequest(userId = 99L, categoryId = 1L)
         `when`(gameRepository.findByUserIdAndCategoryId(99L, 1L)).thenReturn(Optional.empty())
         `when`(userRepository.findById(99L)).thenReturn(Optional.empty())
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(UserNotFoundException::class.java) {
             gameService.startOrGetGame(request)
         }
     }
@@ -246,7 +247,7 @@ class GameServiceTest {
         val user = createUserDummy(1L)
         val category = createCategoryDummy(1L)
         val game = Game(user, category)
-        val response = GameResponse(1L, 1L, 1L, 100, LocalDateTime.now(), null)
+        val response = GameResponse(1L, 1L, 1L, 100, LocalDateTime.now())
 
         `when`(gameRepository.findByUserIdAndCategoryIdIn(anyLong(), anyList()))
             .thenReturn(listOf(game))

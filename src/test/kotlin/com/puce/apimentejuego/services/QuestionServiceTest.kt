@@ -1,5 +1,7 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.CategoryNotFoundException
+import com.puce.apimentejuego.exceptions.QuestionIdNotFoundException
 import com.puce.apimentejuego.mappers.QuestionMapper
 import com.puce.apimentejuego.models.entities.Category
 import com.puce.apimentejuego.models.entities.Question
@@ -63,7 +65,7 @@ class QuestionServiceTest {
     @Test
     fun `SHOULD save a question GIVEN a valid request`() {
         val categoryId = 1L
-        val request = QuestionRequest(categoryId, "¿Pregunta?", "Explicación", true)
+        val request = QuestionRequest(categoryId, "¿Pregunta?", "Explicación")
 
         val category = createCategoryDummy(categoryId)
         val questionEntity = createQuestionDummy(0L, category) // Sin ID
@@ -84,12 +86,12 @@ class QuestionServiceTest {
 
     // --- TEST: CREATE (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException when saving with non-existent category`() {
-        val request = QuestionRequest(99L, "?", "Exp", true)
+    fun `SHOULD throw CategoryNotFoundException when saving with non-existent category`() {
+        val request = QuestionRequest(99L, "?", "Exp")
 
         `when`(categoryRepositoryMock.findById(99L)).thenReturn(Optional.empty())
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(CategoryNotFoundException::class.java) {
             questionService.save(request)
         }
     }
@@ -117,7 +119,7 @@ class QuestionServiceTest {
         val questionId = 10L
         val categoryId = 1L
 
-        val request = QuestionRequest(categoryId, "Nueva Pregunta", "Nueva Exp", false)
+        val request = QuestionRequest(categoryId, "Nueva Pregunta", "Nueva Exp")
 
         val category = createCategoryDummy(categoryId)
         val existingQuestion = createQuestionDummy(questionId, category)
@@ -146,7 +148,7 @@ class QuestionServiceTest {
         val oldCategoryId = 1L
         val newCategoryId = 2L
 
-        val request = QuestionRequest(newCategoryId, "Q", "E", true)
+        val request = QuestionRequest(newCategoryId, "Q", "E")
 
         val oldCategory = createCategoryDummy(oldCategoryId)
         val newCategory = createCategoryDummy(newCategoryId)
@@ -184,7 +186,7 @@ class QuestionServiceTest {
         val questionId = 99L
         `when`(questionRepositoryMock.existsById(questionId)).thenReturn(false)
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(QuestionIdNotFoundException::class.java) {
             questionService.deleteById(questionId)
         }
     }

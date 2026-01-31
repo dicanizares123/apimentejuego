@@ -1,5 +1,6 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.OptionIdNotFoundException
 import com.puce.apimentejuego.mappers.OptionMapper
 import com.puce.apimentejuego.models.entities.Option
 import com.puce.apimentejuego.models.requests.OptionRequest
@@ -70,16 +71,16 @@ class OptionServiceTest {
 
         val result = optionService.findById(optionId)
 
-        assertEquals(optionId, result.id)
+        assertEquals(1L, result.id)
     }
 
     // --- TEST: FIND BY ID (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException GIVEN a non existing id`() {
+    fun `SHOULD throw OptionIdNotFoundException GIVEN a non existing id`() {
         val optionId = 99L
         `when`(optionRepositoryMock.findById(optionId)).thenReturn(Optional.empty())
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(OptionIdNotFoundException::class.java) {
             optionService.findById(optionId)
         }
     }
@@ -125,13 +126,13 @@ class OptionServiceTest {
 
     // --- TEST: UPDATE (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException when updating non existing option`() {
+    fun `SHOULD throw OptionIdNotFoundException when updating non existing option`() {
         val optionId = 99L
         val request = OptionRequest("R")
 
         `when`(optionRepositoryMock.findById(optionId)).thenReturn(Optional.empty())
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(OptionIdNotFoundException::class.java) {
             optionService.update(optionId, request)
         }
     }
@@ -149,11 +150,11 @@ class OptionServiceTest {
 
     // --- TEST: DELETE (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException when deleting non existing option`() {
+    fun `SHOULD throw OptionIdNotFoundException when deleting non existing option`() {
         val optionId = 99L
         `when`(optionRepositoryMock.existsById(optionId)).thenReturn(false)
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(OptionIdNotFoundException::class.java) {
             optionService.deleteById(optionId)
         }
 

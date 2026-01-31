@@ -184,7 +184,7 @@ class QuestionOptionServiceTest {
         `when`(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category))
         `when`(questionRepository.findByCategoryId(categoryId)).thenReturn(allQuestions)
 
-        val result = questionOptionService.getQuestionsWithOptions(categoryId)
+        val result = questionOptionService.getQuestionsWithOptionsPerCategory(categoryId)
 
         // VERIFICACIÓN:
         // 1. Debe devolver máximo 2 preguntas (según questionsPerGame)

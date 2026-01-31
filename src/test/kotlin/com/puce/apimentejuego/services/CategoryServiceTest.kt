@@ -1,5 +1,6 @@
 package com.puce.apimentejuego.services
 
+import com.puce.apimentejuego.exceptions.CategoryNotFoundException
 import com.puce.apimentejuego.mappers.CategoryMapper
 import com.puce.apimentejuego.models.entities.Category
 import com.puce.apimentejuego.models.requests.CategoryRequest
@@ -102,16 +103,16 @@ class CategoryServiceTest {
 
         val result = categoryService.findById(categoryId)
 
-        assertEquals(categoryId, result.id)
+        assertEquals(1L, result.id)
     }
 
     // --- TEST: FIND BY ID (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException GIVEN a non existing id`() {
+    fun `SHOULD throw CategoryNotFoundException GIVEN a non existing id`() {
         val categoryId = 99L
         `when`(categoryRepositoryMock.findById(categoryId)).thenReturn(Optional.empty())
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(CategoryNotFoundException::class.java) {
             categoryService.findById(categoryId)
         }
     }
@@ -176,13 +177,13 @@ class CategoryServiceTest {
 
     // --- TEST: UPDATE (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException when updating non existing category`() {
+    fun `SHOULD throw CategoryNotFoundException when updating non existing category`() {
         val categoryId = 99L
         val request = CategoryRequest("s", 1, "d", "sd", "d", "t", 10)
 
         `when`(categoryRepositoryMock.findById(categoryId)).thenReturn(Optional.empty())
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(CategoryNotFoundException::class.java) {
             categoryService.update(categoryId, request)
         }
 
@@ -203,11 +204,11 @@ class CategoryServiceTest {
 
     // --- TEST: DELETE (Error) ---
     @Test
-    fun `SHOULD throw NoSuchElementException when deleting non existing id`() {
+    fun `SHOULD throw CategoryNotFoundException when deleting non existing id`() {
         val categoryId = 99L
         `when`(categoryRepositoryMock.existsById(categoryId)).thenReturn(false)
 
-        assertThrows(NoSuchElementException::class.java) {
+        assertThrows(CategoryNotFoundException::class.java) {
             categoryService.deleteById(categoryId)
         }
 

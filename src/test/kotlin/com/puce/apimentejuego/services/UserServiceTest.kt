@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.Optional
 import java.time.LocalDateTime
 
@@ -17,16 +18,19 @@ class UserServiceTest {
 
     private lateinit var userRepositoryMock: UserRepository
     private lateinit var userMapperMock: UserMapper
+    private lateinit var passwordEncoderMock: PasswordEncoder
     private lateinit var userService: UserService
 
     @BeforeEach
     fun init() {
         userRepositoryMock = mock(UserRepository::class.java)
         userMapperMock = mock(UserMapper::class.java)
+        passwordEncoderMock = mock(PasswordEncoder::class.java)
 
         userService = UserService(
             userRepository = userRepositoryMock,
-            userMapper = userMapperMock
+            userMapper = userMapperMock,
+            passwordEncoder = passwordEncoderMock
         )
     }
 
@@ -58,6 +62,13 @@ class UserServiceTest {
             firstName = "Test",
             lastName = "User"
         )
+
+        // Mock para validaciones de duplicados
+        `when`(userRepositoryMock.existsByUsername(request.username!!)).thenReturn(false)
+        `when`(userRepositoryMock.existsByEmail(request.email!!)).thenReturn(false)
+
+        // Mock para passwordEncoder
+        `when`(passwordEncoderMock.encode(request.password)).thenReturn("hashedPassword123")
 
         `when`(userMapperMock.toEntity(request)).thenReturn(userEntity)
         `when`(userRepositoryMock.save(userEntity)).thenReturn(savedUser)
@@ -123,6 +134,14 @@ class UserServiceTest {
         )
 
         `when`(userRepositoryMock.findById(userId)).thenReturn(Optional.of(existingUser))
+
+        // Mock para validaciones de duplicados (simulamos que no hay duplicados)
+        `when`(userRepositoryMock.existsByUsername(request.username!!)).thenReturn(false)
+        `when`(userRepositoryMock.existsByEmail(request.email!!)).thenReturn(false)
+
+        // Mock para passwordEncoder
+        `when`(passwordEncoderMock.encode(request.password)).thenReturn("hashedPassword123")
+
         `when`(userRepositoryMock.save(existingUser)).thenReturn(updatedUser)
         `when`(userMapperMock.toResponse(updatedUser)).thenReturn(expectedResponse)
 

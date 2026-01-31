@@ -61,20 +61,6 @@ class GameService(
         return gameMapper.toResponse(savedGame)
     }
 
-
-    // No esta siendo usado actualmente
-    fun updateScore(gameId: Long, score: Int): GameResponse {
-        val game = gameRepository.findById(gameId)
-            .orElseThrow { GameNotFoundException("Game with ID $gameId not found") }
-
-        game.score = score
-        // game.updatedAt se actualiza automáticamente si BaseEntity usa @PreUpdate o similar,
-        // si no, JPA lo hace al guardar si hay cambios.
-
-        val savedGame = gameRepository.save(game)
-        return gameMapper.toResponse(savedGame)
-    }
-
     @Transactional
     fun submitAnswers(request: SubmitAnswersRequest): GameResultResponse {
         // Validar campos requeridos
@@ -84,14 +70,9 @@ class GameService(
         if (request.answers == null) {
             throw MissingParameterException("Field 'answers' is required")
         }
-        if (request.answers.isEmpty()) {
-            throw MissingParameterException("Field 'answers' cannot be empty")
-        }
 
         val game = gameRepository.findById(request.gameId)
             .orElseThrow { GameNotFoundException("Game with ID ${request.gameId} not found") }
-
-        // Si el juego ya terminó, no permitir enviar respuestas de nuevo
 
 
         var currentScore = 0
