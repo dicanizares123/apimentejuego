@@ -50,3 +50,7 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 	jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
