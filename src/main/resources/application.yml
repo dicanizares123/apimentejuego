@@ -3,10 +3,10 @@ spring:
     name: apimentejuego
 
   datasource:
-    url: jdbc:postgresql://localhost:6969/mentejuegodb
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${POSTGRES_DB}
     driver-class-name: org.postgresql.Driver
-    username: admin
-    password: admin
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   jpa:
     hibernate:
