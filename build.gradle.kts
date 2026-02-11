@@ -52,5 +52,5 @@ tasks.withType<Test> {
 }
 
 tasks.getByName<Jar>("jar") {
-    enabled = false
+    enabled = true
 }
