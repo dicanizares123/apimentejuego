@@ -109,12 +109,12 @@ class GameService(
                     currentScore += 1 // Sumar puntos por respuesta correcta (puedes ajustar este valor)
                     correctCount++
                 } else {
-                    currentScore -= 2 // Restar 1 punto por respuesta incorrecta
+                    currentScore -= 1 // Restar 1 punto por respuesta incorrecta
                     incorrectCount++
                 }
             } else {
                 // No respondió (se acabó el tiempo o saltó la pregunta)
-                currentScore -= 2 // Restar 1 punto por no responder
+                currentScore -= 1 // Restar 1 punto por no responder
                 unansweredCount++
             }
 
