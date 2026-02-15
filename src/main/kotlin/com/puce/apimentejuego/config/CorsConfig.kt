@@ -13,7 +13,10 @@ class CorsConfig {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:8100") // Permitir tu frontend
+                    .allowedOrigins(
+                        "https://localhost", // Origen de la app en Android/iOS
+                        "http://localhost"  // Origen común para desarrollo local
+                    )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true)
@@ -21,4 +24,3 @@ class CorsConfig {
         }
     }
 }
-
